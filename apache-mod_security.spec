@@ -27,7 +27,7 @@ attacks.
 
 %description -l pl
 ModSecurity jest otwartym silnikiem wykrywania i zapobiegania intruzom
-dla aplikacji webowych. Oferuje wbudwany w serwer www, dzia³aj±c jak
+dla aplikacji webowych. Operuje w ramach serwera www, dzia³aj±c jak
 potê¿ny parasol chroni±cy aplikacje webowe przed atakami.
 
 %prep
