@@ -7,7 +7,6 @@ Version:	1.8.6
 Release:	0.1
 License:	GPL v2
 Group:		Networking/Daemons
-######		/home/staff/mnx/zbyniu/rpm/SOURCES/rpm.groups: no such file
 Source0:	http://www.modsecurity.org/download/mod_security-%{version}.tar.gz
 # Source0-md5:	f6bf4724dd0db3d37586b64bc0ee160d
 URL:		http://sourceforge.net/projects/mod-acct/
@@ -27,7 +26,7 @@ attacks.
 
 %description -l pl
 ModSecurity jest otwartym silnikiem wykrywania i zapobiegania intruzom
-dla aplikacji webowych. Operuje w ramach serwera www, dzia³aj±c jak
+dla aplikacji webowych. Operuje w ramach serwera WWW, dzia³aj±c jak
 potê¿ny parasol chroni±cy aplikacje webowe przed atakami.
 
 %prep
