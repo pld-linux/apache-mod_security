@@ -9,7 +9,7 @@ License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.modsecurity.org/download/mod_security-%{version}.tar.gz
 # Source0-md5:	f6bf4724dd0db3d37586b64bc0ee160d
-URL:		http://sourceforge.net/projects/mod-acct/
+URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 Requires(post,preun):	%{apxs}
 Requires:	apache
