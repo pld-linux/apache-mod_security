@@ -1,5 +1,5 @@
 %define		mod_name	security
-%define 	apxs		%{_sbindir}/apxs
+%define 	apxs		/usr/sbin/apxs
 Summary:	Apache module: securing web applications
 Summary(pl):	Modu³ do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
@@ -16,7 +16,7 @@ Requires:	apache
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR)
-%define		_sysconfdir     /etc/httpd
+%define		_sysconfdir     %(%{apxs} -q SYSCONFDIR)
 
 %description
 ModSecurity is an open source intrusion detection and prevention
