@@ -3,12 +3,12 @@
 Summary:	Apache module: securing web applications
 Summary(pl):	Modu³ do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	1.8.7RC1
+Version:	1.8.7
 Release:	0.1
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.modsecurity.org/download/mod_security-%{version}.tar.gz
-# Source0-md5:	47122cd2a2b1791dbcedce423df5962d
+Source0:	http://www.modsecurity.org/download/modsecurity-%{version}.tar.gz
+# Source0-md5:	0dd48656e451c711358c097dc80e0369
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 Requires(post,preun):	%{apxs}
@@ -30,7 +30,7 @@ dla aplikacji WWW. Operuje w ramach serwera WWW, dzia³aj±c jak
 potê¿ny parasol chroni±cy aplikacje WWW przed atakami.
 
 %prep
-%setup -q -n mod_%{mod_name}-%{version}
+%setup -q -n modsecurity-%{version}
 
 %build
 cd apache2
