@@ -3,13 +3,13 @@
 Summary:	Apache module: securing web applications
 Summary(pl):	Modu³ do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-%define	_pre	RC1
-Version:	1.9
-Release:	0.%{_pre}.1
+%define	_pre	%{nil}
+Version:	1.9.1
+Release:	1
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.modsecurity.org/download/modsecurity-%{version}%{_pre}.tar.gz
-# Source0-md5:	400c5f127aa1b406bb65875acdcc4908
+Source0:	http://www.modsecurity.org/download/modsecurity-apache-%{version}%{_pre}.tar.gz
+# Source0-md5:	d648ba26b1dba708a06344072bea984c
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 Requires(post,preun):	%{apxs}
@@ -17,7 +17,7 @@ Requires:	apache
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR)
-%define		_sysconfdir     %(%{apxs} -q SYSCONFDIR)
+%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR)
 
 %description
 ModSecurity is an open source intrusion detection and prevention
@@ -31,7 +31,7 @@ dla aplikacji WWW. Operuje w ramach serwera WWW, dzia³aj±c jak
 potê¿ny parasol chroni±cy aplikacje WWW przed atakami.
 
 %prep
-%setup -q -n modsecurity-%{version}%{_pre}
+%setup -q -n modsecurity-apache-%{version}%{_pre}
 
 %build
 cd apache2
