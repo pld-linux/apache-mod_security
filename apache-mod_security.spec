@@ -1,7 +1,7 @@
 %define		mod_name	security
 %define 	apxs		/usr/sbin/apxs
 Summary:	Apache module: securing web applications
-Summary(pl):	Modu³ do apache: ochrona aplikacji WWW
+Summary(pl.UTF-8):   ModuÅ‚ do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	1.9.4
 Release:	1
@@ -24,10 +24,10 @@ engine for web applications. It operates embedded into the web server,
 acting as a powerful umbrella - shielding web applications from
 attacks.
 
-%description -l pl
+%description -l pl.UTF-8
 ModSecurity jest otwartym silnikiem wykrywania i zapobiegania intruzom
-dla aplikacji WWW. Operuje w ramach serwera WWW, dzia³aj±c jak potê¿ny
-parasol chroni±cy aplikacje WWW przed atakami.
+dla aplikacji WWW. Operuje w ramach serwera WWW, dziaÅ‚ajÄ…c jak potÄ™Å¼ny
+parasol chroniÄ…cy aplikacje WWW przed atakami.
 
 %prep
 %setup -q -n modsecurity-apache_%{version}
