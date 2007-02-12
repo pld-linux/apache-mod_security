@@ -1,7 +1,7 @@
 %define		mod_name	security
 %define 	apxs		/usr/sbin/apxs
 Summary:	Apache module: securing web applications
-Summary(pl.UTF-8):   Moduł do apache: ochrona aplikacji WWW
+Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	1.9.4
 Release:	1
