@@ -3,20 +3,21 @@
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	1.9.5
-Release:	1
+Version:	2.1.4
+Release:	0.1
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.gz
-# Source0-md5:	83f56cce4207d02b93ff60870bf1204f
+# Source0-md5:	cf4694a8d50082969a47b541300f1c43
+Source1:	apache-mod_security.conf
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
-%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)
+%define		apacheconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
+%define		apachelibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
 
 %description
 ModSecurity is an open source intrusion detection and prevention
@@ -33,16 +34,22 @@ parasol chroniący aplikacje WWW przed atakami.
 %setup -q -n modsecurity-apache_%{version}
 
 %build
-cd apache2
-%{apxs} -c mod_%{mod_name}.c
+%{__make} -C apache2 \
+	CC="%{__cc}" \
+	CFLAGS="%{optflags}" \
+	top_dir="%{apachelibdir}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}/httpd.conf}
+install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}}
 
-install apache2/.libs/mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
-echo 'LoadModule %{mod_name}_module modules/mod_%{mod_name}.so' > \
-	$RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf/90_mod_%{mod_name}.conf
+install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
+cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
+
+install -d $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
+cp -a rules/*.conf $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
+#cp -a rules/blocking/*.conf $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
+echo '# Drop your local rules in here.' $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -57,7 +64,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES README httpd.conf*
-%doc doc/modsecurity-manual.[ch]* doc/*.gif util
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf/*_mod_%{mod_name}.conf
-%attr(755,root,root) %{_pkglibdir}/*.so
+%doc CHANGES README.* modsecurity* doc/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/*_mod_%{mod_name}.conf
+%dir %{apacheconfdir}/modsecurity.d
+%dir %{apacheconfdir}/modsecurity.d/blocking
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.conf
+#%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/blocking/*.conf
+%attr(755,root,root) %{apachelibdir}/*.so
