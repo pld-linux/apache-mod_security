@@ -3,12 +3,12 @@
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	2.1.7
+Version:	2.5.7
 Release:	1
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.gz
-# Source0-md5:	19c34dd5611e0c516c0717de793f4640
+# Source0-md5:	049509c4d76048ce02cfb558d6598761
 Source1:	apache-mod_security.conf
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
@@ -32,9 +32,17 @@ parasol chroniący aplikacje WWW przed atakami.
 
 %prep
 %setup -q -n modsecurity-apache_%{version}
+mv rules/README{,.rules}
+mv rules/CHANGELOG{,.rules}
 
 %build
-%{__make} -C apache2 \
+cd apache2
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%configure
+%{__make} \
 	CC="%{__cc}" \
 	CFLAGS="%{optflags}" \
 	top_dir="%{apachelibdir}"
@@ -64,7 +72,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES README.* modsecurity* doc/*
+%doc CHANGES README.* modsecurity* doc/* rules/optional_rules rules/README.rules rules/CHANGELOG.rules
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/*_mod_%{mod_name}.conf
 %dir %{apacheconfdir}/modsecurity.d
 %dir %{apacheconfdir}/modsecurity.d/blocking
