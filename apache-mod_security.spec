@@ -1,5 +1,5 @@
 %define		mod_name	security
-%define 	apxs		/usr/sbin/apxs
+%define		apxs		/usr/sbin/apxs
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
@@ -14,6 +14,7 @@ URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
+Requires:	apache(mod_unique_id)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		apacheconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
