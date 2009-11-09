@@ -3,14 +3,13 @@
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	2.5.9
-Release:	2
+Version:	2.5.11
+Release:	1
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.gz
-# Source0-md5:	b7bf44a7e041b49b0da5043495660375
+# Source0-md5:	66cd4e5eed674ac3a0013b7229a1c2bb
 Source1:	%{name}.conf
-Patch0:		%{name}-branding.patch
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -36,7 +35,6 @@ parasol chroniący aplikacje WWW przed atakami.
 %setup -q -n modsecurity-apache_%{version}
 mv rules/README{,.rules}
 mv rules/CHANGELOG{,.rules}
-%patch0 -p1
 
 %build
 cd apache2
