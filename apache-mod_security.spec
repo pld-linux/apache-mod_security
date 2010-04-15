@@ -4,7 +4,7 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.5.12
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.gz
@@ -15,6 +15,7 @@ BuildRequires:	apache-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_unique_id
+Suggests:	apache-mod_headers
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		apacheconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
@@ -56,7 +57,7 @@ install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
 
 install -d $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
-cp -a rules/*.conf rules/base_rules/* $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
+cp -a modsecurity.conf-minimal rules/*.conf rules/base_rules/* $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
 #cp -a rules/blocking/*.conf $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
 echo '# Drop your local rules in here.' > $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 
@@ -73,10 +74,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES MODSECURITY_LICENSING_EXCEPTION README.* modsecurity* doc/* rules/optional_rules rules/README.rules rules/CHANGELOG.rules
+%doc CHANGES MODSECURITY_LICENSING_EXCEPTION README.* modsecurity* doc/* rules/optional_rules rules/README.rules rules/CHANGELOG.rules tools
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/*_mod_%{mod_name}.conf
 %dir %{apacheconfdir}/modsecurity.d
 %dir %{apacheconfdir}/modsecurity.d/blocking
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.*
 #%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/blocking/*.conf
 %attr(755,root,root) %{apachelibdir}/*.so
