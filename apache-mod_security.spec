@@ -4,7 +4,7 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.5.12
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.gz
@@ -56,7 +56,7 @@ install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
 
 install -d $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
-cp -a rules/*.conf $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
+cp -a rules/*.conf rules/base_rules/* $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
 #cp -a rules/blocking/*.conf $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
 echo '# Drop your local rules in here.' > $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 
