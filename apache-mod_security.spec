@@ -12,6 +12,10 @@ Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.g
 Source1:	%{name}.conf
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
+BuildRequires:	autoconf
+BuildRequires:	libxml2-devel
+BuildRequires:	pcre-devel
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_unique_id
