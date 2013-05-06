@@ -3,12 +3,12 @@
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	2.5.13
-Release:	3
+Version:	2.7.3
+Release:	0.1
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
-Source0:	http://www.modsecurity.org/download/modsecurity-apache_%{version}.tar.gz
-# Source0-md5:	92b0ed7dec188650ea9d78dfc326e8ec
+Source0:	http://www.modsecurity.org/tarball/%{version}//modsecurity-apache_%{version}.tar.gz
+# Source0-md5:	4a220bf4b954ed1760462e5956f65b21
 Source1:	%{name}.conf
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
@@ -20,6 +20,7 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_unique_id
 Suggests:	apache-mod_headers
+Suggests:	apache-mod_security_crs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		apacheconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
@@ -38,17 +39,8 @@ parasol chroniący aplikacje WWW przed atakami.
 
 %prep
 %setup -q -n modsecurity-apache_%{version}
-%{__mv} rules/README{,.rules}
-%{__mv} rules/CHANGELOG{,.rules}
-%{__mv} rules/modsecurity_crs_10_config.conf{.example,}
-%{__mv} rules/modsecurity_crs_48_local_exceptions.conf{.example,}
 
 %build
-cd apache2
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-%{__autoheader}
 %configure
 %{__make} \
 	CC="%{__cc}" \
@@ -63,8 +55,7 @@ install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
 
 install -d $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
-cp -a modsecurity.conf-minimal rules/*.conf rules/base_rules/* $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
-#cp -a rules/blocking/*.conf $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
+cp -a modsecurity.conf-recommended $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
 echo '# Drop your local rules in here.' > $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 
 %clean
@@ -80,10 +71,9 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES MODSECURITY_LICENSING_EXCEPTION README.* modsecurity* doc/* rules/optional_rules rules/README.rules rules/CHANGELOG.rules rules/util tools
+%doc CHANGES README.* modsecurity* doc/* tools
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/*_mod_%{mod_name}.conf
 %dir %{apacheconfdir}/modsecurity.d
 %dir %{apacheconfdir}/modsecurity.d/blocking
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.*
-#%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/blocking/*.conf
 %attr(755,root,root) %{apachelibdir}/*.so
