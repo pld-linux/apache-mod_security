@@ -4,7 +4,7 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.7.3
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/tarball/%{version}//modsecurity-apache_%{version}.tar.gz
@@ -57,7 +57,7 @@ This package contains the ModSecurity Audit Log Collector.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}/modsecurity.d} \
+install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}/modsecurity.d/activated_rules} \
 	$RPM_BUILD_ROOT{/var/log/mlogc/data,%{_bindir},%{_sysconfdir}} \
 	$RPM_BUILD_ROOT/var/lib/%{name}
 
@@ -87,6 +87,7 @@ fi
 %doc CHANGES README.* modsecurity* doc/* tools
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/*_mod_%{mod_name}.conf
 %dir %{apacheconfdir}/modsecurity.d
+%dir %{apacheconfdir}/modsecurity.d/activated_rules
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.*
 %attr(755,root,root) %{apachelibdir}/*.so
 %attr(770,http,root) %dir /var/lib/%{name}
