@@ -4,7 +4,7 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.7.3
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/tarball/%{version}//modsecurity-apache_%{version}.tar.gz
@@ -57,13 +57,13 @@ This package contains the ModSecurity Audit Log Collector.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}} \
-	install -d $RPM_BUILD_ROOT{/var/log/mlogc/data,%{_bindir},%{_sysconfdir}}
+install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}/modsecurity.d} \
+	$RPM_BUILD_ROOT{/var/log/mlogc/data,%{_bindir},%{_sysconfdir}} \
+	$RPM_BUILD_ROOT/var/lib/%{name}
 
 install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
 
-install -d $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/blocking
 cp -a modsecurity.conf-recommended $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
 echo '# Drop your local rules in here.' > $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 
@@ -89,6 +89,7 @@ fi
 %dir %{apacheconfdir}/modsecurity.d
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.*
 %attr(755,root,root) %{apachelibdir}/*.so
+%attr(770,http,root) %dir /var/lib/%{name}
 
 %files -n mlogc
 %defattr(644,root,root,755)
