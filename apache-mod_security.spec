@@ -3,12 +3,12 @@
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	2.7.3
-Release:	3
+Version:	2.7.5
+Release:	1
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.modsecurity.org/tarball/%{version}//modsecurity-apache_%{version}.tar.gz
-# Source0-md5:	4a220bf4b954ed1760462e5956f65b21
+# Source0-md5:	ef471f4e126c34bf4d214103402a24ee
 Source1:	%{name}.conf
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
