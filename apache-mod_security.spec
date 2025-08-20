@@ -3,12 +3,12 @@
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	2.7.5
-Release:	5
+Version:	2.9.12
+Release:	1
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
-Source0:	http://www.modsecurity.org/tarball/%{version}//modsecurity-apache_%{version}.tar.gz
-# Source0-md5:	ef471f4e126c34bf4d214103402a24ee
+Source0:	https://github.com/owasp-modsecurity/ModSecurity/releases/download/v%{version}/modsecurity-v%{version}.tar.gz
+# Source0-md5:	0a53077bc36e53d7c9e8b617d7e08f9d
 Source1:	%{name}.conf
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
@@ -46,7 +46,7 @@ Requires:	%{name} = %{version}
 This package contains the ModSecurity Audit Log Collector.
 
 %prep
-%setup -q -n modsecurity-apache_%{version}
+%setup -q -n modsecurity-v%{version}
 
 %build
 %configure
