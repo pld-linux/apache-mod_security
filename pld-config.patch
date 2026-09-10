@@ -1,0 +1,70 @@
+PLD paths for the shipped engine config (logs/ is ServerRoot-relative as in httpd.conf; SecUnicodeMapFile is not);
+SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
+
+--- modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-10 23:55:11.935535749 +0200
++++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-10 23:55:11.936658773 +0200
+@@ -4,7 +4,7 @@
+ # only to start with, because that minimises the chances of post-installation
+ # disruption.
+ #
+-SecRuleEngine DetectionOnly
++SecRuleEngine On
+ 
+ 
+ # -- Request body handling ---------------------------------------------------
+@@ -147,13 +147,13 @@
+ # This default setting is chosen due to all systems have /tmp available however, 
+ # this is less than ideal. It is recommended that you specify a location that's private.
+ #
+-SecTmpDir /tmp/
++SecTmpDir /var/lib/apache-mod_security
+ 
+ # The location where ModSecurity will keep its persistent data.  This default setting 
+ # is chosen due to all systems have /tmp available however, it
+ # too should be updated to a place that other users can't access.
+ #
+-SecDataDir /tmp/
++SecDataDir /var/lib/apache-mod_security
+ 
+ 
+ # -- File uploads handling configuration -------------------------------------
+@@ -162,7 +162,7 @@
+ # location must be private to ModSecurity. You don't want other users on
+ # the server to access the files, do you?
+ #
+-#SecUploadDir /opt/modsecurity/var/upload/
++#SecUploadDir /var/lib/apache-mod_security/upload/
+ 
+ # By default, only keep the files that were determined to be unusual
+ # in some way (by an external inspection script). For this to work you
+@@ -182,7 +182,7 @@
+ # The default debug log configuration is to duplicate the error, warning
+ # and notice messages from the error log.
+ #
+-#SecDebugLog /opt/modsecurity/var/log/debug.log
++#SecDebugLog logs/modsec_debug.log
+ #SecDebugLogLevel 3
+ 
+ 
+@@ -202,10 +202,10 @@
+ # assumes that you will use the audit log only ocassionally.
+ #
+ SecAuditLogType Serial
+-SecAuditLog /var/log/modsec_audit.log
++SecAuditLog logs/modsec_audit.log
+ 
+ # Specify the path for concurrent audit logging.
+-#SecAuditLogStorageDir /opt/modsecurity/var/audit/
++#SecAuditLogStorageDir logs/modsec_audit/
+ 
+ 
+ # -- Miscellaneous -----------------------------------------------------------
+@@ -227,7 +227,7 @@
+ # to properly map encoded data to your language. Properly setting
+ # these directives helps to reduce false positives and negatives.
+ #
+-SecUnicodeMapFile unicode.mapping 20127
++SecUnicodeMapFile /etc/httpd/conf.d/modsecurity.d/unicode.mapping 20127
+ 
+ # Improve the quality of ModSecurity by sharing information about your
+ # current ModSecurity version and dependencies versions.

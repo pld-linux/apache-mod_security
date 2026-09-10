@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	tests		# unit tests
-%bcond_with	regression_tests	# regression tests (start httpd on localhost; unverified on builders)
+%bcond_with	regression_tests	# regression tests
 
 %define		mod_name	security
 %define		apxs		/usr/sbin/apxs
@@ -16,6 +16,7 @@ Source0:	https://github.com/owasp-modsecurity/ModSecurity/releases/download/v%{v
 # Source0-md5:	8d9cc060d0056b21f2463dc1e02a940d
 Source1:	%{name}.conf
 Patch0:		apu-crypto-includes.patch
+Patch1:		pld-config.patch
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 BuildRequires:	autoconf
@@ -71,6 +72,7 @@ This package contains the ModSecurity Audit Log Collector.
 %prep
 %setup -q -n modsecurity-v%{version}
 %patch -P0 -p1
+%patch -P1 -p1
 
 %build
 %{__libtoolize}
@@ -105,7 +107,9 @@ install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}/modsecurity.d/activa
 install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
 
-cp -a modsecurity.conf-recommended $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
+cp -p modsecurity.conf-recommended $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity.conf
+# code-point table for SecUnicodeMapFile (t:utf8toUnicode in CRS 4 rules)
+cp -p unicode.mapping $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d
 echo '# Drop your local rules in here.' > $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 
 install mlogc/mlogc $RPM_BUILD_ROOT%{_bindir}
@@ -126,10 +130,11 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc CHANGES README.* modsecurity* doc/* tools
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config %{apacheconfdir}/*_mod_%{mod_name}.conf
 %dir %{apacheconfdir}/modsecurity.d
 %dir %{apacheconfdir}/modsecurity.d/activated_rules
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.conf
+%{apacheconfdir}/modsecurity.d/unicode.mapping
 %attr(755,root,root) %{apachelibdir}/*.so
 %attr(770,http,root) %dir /var/lib/%{name}
 
