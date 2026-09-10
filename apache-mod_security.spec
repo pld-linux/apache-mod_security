@@ -9,7 +9,7 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.9.14
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	https://github.com/owasp-modsecurity/ModSecurity/releases/download/v%{version}/modsecurity-v%{version}.tar.gz
@@ -133,7 +133,8 @@ fi
 %attr(640,root,root) %config %{apacheconfdir}/*_mod_%{mod_name}.conf
 %dir %{apacheconfdir}/modsecurity.d
 %dir %{apacheconfdir}/modsecurity.d/activated_rules
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/*.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/modsecurity.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/modsecurity_localrules.conf
 %{apacheconfdir}/modsecurity.d/unicode.mapping
 %attr(755,root,root) %{apachelibdir}/*.so
 %attr(770,http,root) %dir /var/lib/%{name}
