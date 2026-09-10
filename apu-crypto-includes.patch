@@ -1,0 +1,14 @@
+apr_crypto.h comes from apu-1-config --includes, which the APU_HAVE_CRYPTO test never adds;
+with apr and apr-util headers in separate dirs the header is not found and SecRemoteRule crypto is silently disabled.
+
+--- modsecurity-v2.9.14/configure.ac	2026-07-02 20:46:03.000000000 +0200
++++ modsecurity-v2.9.14/configure.ac	2026-09-10 22:52:48.946593923 +0200
+@@ -901,7 +901,7 @@
+ # since it's already used correctly to compile modsecurity module.
+ ORIG_CFLAGS="$CFLAGS $APU_CFLAGS"
+ ORIG_CPPFLAGS="$CPPFLAGS"
+-CFLAGS="$CFLAGS $APR_CFLAGS"
++CFLAGS="$CFLAGS $APR_CFLAGS $APU_CFLAGS"
+ CPPFLAGS="$CPPFLAGS $APR_CPPFLAGS"
+ AC_LINK_IFELSE(
+ 	[AC_LANG_PROGRAM([[ #include <apr_crypto.h> ]],

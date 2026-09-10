@@ -1,22 +1,45 @@
+#
+# Conditional build:
+%bcond_without	tests		# unit tests
+%bcond_with	regression_tests	# regression tests (start httpd on localhost; unverified on builders)
+
 %define		mod_name	security
 %define		apxs		/usr/sbin/apxs
 Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
-Version:	2.9.12
+Version:	2.9.14
 Release:	1
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	https://github.com/owasp-modsecurity/ModSecurity/releases/download/v%{version}/modsecurity-v%{version}.tar.gz
-# Source0-md5:	0a53077bc36e53d7c9e8b617d7e08f9d
+# Source0-md5:	8d9cc060d0056b21f2463dc1e02a940d
 Source1:	%{name}.conf
+Patch0:		apu-crypto-includes.patch
 URL:		http://www.modsecurity.org/
 BuildRequires:	apache-devel
 BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	curl-devel
+BuildRequires:	libtool
 BuildRequires:	libxml2-devel
-BuildRequires:	pcre-devel
+BuildRequires:	lua54-devel
+BuildRequires:	pcre2-8-devel
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	ssdeep-devel
+BuildRequires:	yajl-devel
+%if %{with regression_tests}
+BuildRequires:	apache
+BuildRequires:	apache-mod_access_compat
+BuildRequires:	apache-mod_authn_core
+BuildRequires:	apache-mod_authz_core
+BuildRequires:	apache-mod_mpm_worker
+BuildRequires:	apache-mod_proxy
+BuildRequires:	apache-mod_unique_id
+BuildRequires:	apache-mod_version
+BuildRequires:	perl-libwww
+%endif
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_unique_id
 Suggests:	apache-mod_headers
@@ -40,20 +63,38 @@ parasol chroniący aplikacje WWW przed atakami.
 %package -n mlogc
 Summary:	ModSecurity Audit Log Collector
 Group:		Networking/Daemons/HTTP
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description -n mlogc
 This package contains the ModSecurity Audit Log Collector.
 
 %prep
 %setup -q -n modsecurity-v%{version}
+%patch -P0 -p1
 
 %build
-%configure
+%{__libtoolize}
+%{__aclocal} -I build
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+%configure \
+	--with-curl=%{_prefix} \
+	--with-lua \
+	--with-pcre2 \
+	--with-ssdeep \
+	--with-yajl
 %{__make} \
 	CC="%{__cc}" \
 	CFLAGS="%{optflags}" \
 	top_dir="%{apachelibdir}"
+
+%if %{with tests}
+%{__make} test
+%endif
+%if %{with regression_tests}
+%{__make} test-regression
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
