@@ -1,8 +1,8 @@
 PLD paths for the shipped engine config (logs/ is ServerRoot-relative as in httpd.conf; SecUnicodeMapFile is not);
-SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
+SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit log (one object per line) for tooling.
 
---- modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-10 23:55:11.935535749 +0200
-+++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-10 23:55:11.936658773 +0200
+--- modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-12 00:43:20.566416060 +0200
++++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-12 00:43:20.566632528 +0200
 @@ -4,7 +4,7 @@
  # only to start with, because that minimises the chances of post-installation
  # disruption.
@@ -46,12 +46,13 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
  #SecDebugLogLevel 3
  
  
-@@ -202,10 +202,10 @@
+@@ -202,10 +202,11 @@
  # assumes that you will use the audit log only ocassionally.
  #
  SecAuditLogType Serial
 -SecAuditLog /var/log/modsec_audit.log
-+SecAuditLog logs/modsec_audit.log
++SecAuditLogFormat JSON
++SecAuditLog logs/modsec_audit.json
  
  # Specify the path for concurrent audit logging.
 -#SecAuditLogStorageDir /opt/modsecurity/var/audit/
@@ -59,7 +60,7 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
  
  
  # -- Miscellaneous -----------------------------------------------------------
-@@ -227,7 +227,7 @@
+@@ -227,7 +228,7 @@
  # to properly map encoded data to your language. Properly setting
  # these directives helps to reduce false positives and negatives.
  #

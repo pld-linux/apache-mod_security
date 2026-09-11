@@ -1,0 +1,7 @@
+/var/log/httpd/modsec_audit.json {
+	olddir /var/log/archive/httpd
+	missingok
+	notifempty
+	# serial audit log fd is opened once by the httpd parent and not reopened on graceful reload
+	copytruncate
+}
