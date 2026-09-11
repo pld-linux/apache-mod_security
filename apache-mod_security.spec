@@ -9,12 +9,13 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.9.14
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	https://github.com/owasp-modsecurity/ModSecurity/releases/download/v%{version}/modsecurity-v%{version}.tar.gz
 # Source0-md5:	8d9cc060d0056b21f2463dc1e02a940d
 Source1:	%{name}.conf
+Source2:	%{name}.logrotate
 Patch0:		apu-crypto-includes.patch
 Patch1:		pld-config.patch
 URL:		http://www.modsecurity.org/
@@ -101,11 +102,12 @@ This package contains the ModSecurity Audit Log Collector.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{apachelibdir},%{apacheconfdir}/modsecurity.d/activated_rules} \
-	$RPM_BUILD_ROOT{/var/log/mlogc/data,%{_bindir},%{_sysconfdir}} \
+	$RPM_BUILD_ROOT{/var/log/mlogc/data,%{_bindir},%{_sysconfdir}/logrotate.d} \
 	$RPM_BUILD_ROOT/var/lib/%{name}
 
 install apache2/.libs/mod_%{mod_name}2.so $RPM_BUILD_ROOT%{apachelibdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{apacheconfdir}/90_mod_%{mod_name}.conf
+cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 
 cp -p modsecurity.conf-recommended $RPM_BUILD_ROOT%{apacheconfdir}/modsecurity.d/modsecurity.conf
 # code-point table for SecUnicodeMapFile (t:utf8toUnicode in CRS 4 rules)
@@ -131,6 +133,7 @@ fi
 %defattr(644,root,root,755)
 %doc CHANGES README.* modsecurity* doc/* tools
 %attr(640,root,root) %config %{apacheconfdir}/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/logrotate.d/%{name}
 %dir %{apacheconfdir}/modsecurity.d
 %dir %{apacheconfdir}/modsecurity.d/activated_rules
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{apacheconfdir}/modsecurity.d/modsecurity.conf
