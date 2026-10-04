@@ -1,8 +1,9 @@
 PLD paths for the shipped engine config (logs/ is ServerRoot-relative as in httpd.conf; SecUnicodeMapFile is not);
-SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit log (one object per line) for tooling.
+SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit log (one object per line) for tooling;
+PCRE limits CRS can run under; no response bodies in the audit log.
 
---- modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-12 00:43:20.566416060 +0200
-+++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-09-12 00:43:20.566632528 +0200
+--- modsecurity-v2.9.14/modsecurity.conf-recommended	2026-07-02 20:46:03.000000000 +0200
++++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-10-04 23:12:37.475094969 +0200
 @@ -4,7 +4,7 @@
  # only to start with, because that minimises the chances of post-installation
  # disruption.
@@ -12,7 +13,20 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit lo
  
  
  # -- Request body handling ---------------------------------------------------
-@@ -147,13 +147,13 @@
+@@ -100,8 +100,10 @@
+ # PCRE Tuning
+ # We want to avoid a potential RegEx DoS condition
+ #
+-SecPcreMatchLimit 1000
+-SecPcreMatchLimitRecursion 1000
++# 1000 is too low for CRS regexes on long arguments and on response bodies:
++# the rule fails with "PCRE limits exceeded" and inspects nothing
++SecPcreMatchLimit 500000
++SecPcreMatchLimitRecursion 500000
+ 
+ # Some internal errors will set flags in TX and we will need to look for these.
+ # All of these are prefixed with "MSC_".  The following flags currently exist:
+@@ -147,13 +149,13 @@
  # This default setting is chosen due to all systems have /tmp available however, 
  # this is less than ideal. It is recommended that you specify a location that's private.
  #
@@ -28,7 +42,7 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit lo
  
  
  # -- File uploads handling configuration -------------------------------------
-@@ -162,7 +162,7 @@
+@@ -162,7 +164,7 @@
  # location must be private to ModSecurity. You don't want other users on
  # the server to access the files, do you?
  #
@@ -37,7 +51,7 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit lo
  
  # By default, only keep the files that were determined to be unusual
  # in some way (by an external inspection script). For this to work you
-@@ -182,7 +182,7 @@
+@@ -182,7 +184,7 @@
  # The default debug log configuration is to duplicate the error, warning
  # and notice messages from the error log.
  #
@@ -46,7 +60,17 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit lo
  #SecDebugLogLevel 3
  
  
-@@ -202,10 +202,11 @@
+@@ -195,17 +197,19 @@
+ SecAuditEngine RelevantOnly
+ SecAuditLogRelevantStatus "^(?:5|4(?!04))"
+ 
+-# Log everything we know about a transaction.
+-SecAuditLogParts ABIJDEFHZ
++# Log everything we know about a transaction except the response body (E):
++# it copies whole pages into every record.
++SecAuditLogParts ABIJDFHZ
+ 
+ # Use a single file for logging. This is much easier to look at, but
  # assumes that you will use the audit log only ocassionally.
  #
  SecAuditLogType Serial
@@ -60,7 +84,7 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit lo
  
  
  # -- Miscellaneous -----------------------------------------------------------
-@@ -227,7 +228,7 @@
+@@ -227,7 +231,7 @@
  # to properly map encoded data to your language. Properly setting
  # these directives helps to reduce false positives and negatives.
  #
