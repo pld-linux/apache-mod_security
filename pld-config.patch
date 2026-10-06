@@ -1,9 +1,10 @@
 PLD paths for the shipped engine config (logs/ is ServerRoot-relative as in httpd.conf; SecUnicodeMapFile is not);
 SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit log (one object per line) for tooling;
-PCRE limits CRS can run under; no response bodies in the audit log.
+PCRE limits CRS can run under; no response bodies in the audit log;
+a non-file body limit that does not reject ordinary forms.
 
 --- modsecurity-v2.9.14/modsecurity.conf-recommended	2026-07-02 20:46:03.000000000 +0200
-+++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-10-04 23:12:37.475094969 +0200
++++ modsecurity-v2.9.14/modsecurity.conf-recommended	2026-10-06 11:09:50.994508817 +0200
 @@ -4,7 +4,7 @@
  # only to start with, because that minimises the chances of post-installation
  # disruption.
@@ -13,7 +14,18 @@ PCRE limits CRS can run under; no response bodies in the audit log.
  
  
  # -- Request body handling ---------------------------------------------------
-@@ -100,8 +100,10 @@
+@@ -43,7 +43,9 @@
+ # low as practical.
+ #
+ SecRequestBodyLimit 13107200
+-SecRequestBodyNoFilesLimit 131072
++# mod_security2 answers 413 to a larger non-file body even in DetectionOnly
++# (ProcessPartial does not apply to this limit): 128 KB breaks ordinary forms
++SecRequestBodyNoFilesLimit 13107200
+ 
+ # Store up to 128 KB of request body data in memory. When the multipart
+ # parser reaches this limit, it will start using your hard disk for
+@@ -100,8 +102,10 @@
  # PCRE Tuning
  # We want to avoid a potential RegEx DoS condition
  #
@@ -26,7 +38,7 @@ PCRE limits CRS can run under; no response bodies in the audit log.
  
  # Some internal errors will set flags in TX and we will need to look for these.
  # All of these are prefixed with "MSC_".  The following flags currently exist:
-@@ -147,13 +149,13 @@
+@@ -147,13 +151,13 @@
  # This default setting is chosen due to all systems have /tmp available however, 
  # this is less than ideal. It is recommended that you specify a location that's private.
  #
@@ -42,7 +54,7 @@ PCRE limits CRS can run under; no response bodies in the audit log.
  
  
  # -- File uploads handling configuration -------------------------------------
-@@ -162,7 +164,7 @@
+@@ -162,7 +166,7 @@
  # location must be private to ModSecurity. You don't want other users on
  # the server to access the files, do you?
  #
@@ -51,7 +63,7 @@ PCRE limits CRS can run under; no response bodies in the audit log.
  
  # By default, only keep the files that were determined to be unusual
  # in some way (by an external inspection script). For this to work you
-@@ -182,7 +184,7 @@
+@@ -182,7 +186,7 @@
  # The default debug log configuration is to duplicate the error, warning
  # and notice messages from the error log.
  #
@@ -60,7 +72,7 @@ PCRE limits CRS can run under; no response bodies in the audit log.
  #SecDebugLogLevel 3
  
  
-@@ -195,17 +197,19 @@
+@@ -195,17 +199,19 @@
  SecAuditEngine RelevantOnly
  SecAuditLogRelevantStatus "^(?:5|4(?!04))"
  
@@ -84,7 +96,7 @@ PCRE limits CRS can run under; no response bodies in the audit log.
  
  
  # -- Miscellaneous -----------------------------------------------------------
-@@ -227,7 +231,7 @@
+@@ -227,7 +233,7 @@
  # to properly map encoded data to your language. Properly setting
  # these directives helps to reduce false positives and negatives.
  #

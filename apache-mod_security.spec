@@ -9,7 +9,7 @@ Summary:	Apache module: securing web applications
 Summary(pl.UTF-8):	Moduł do apache: ochrona aplikacji WWW
 Name:		apache-mod_%{mod_name}
 Version:	2.9.14
-Release:	4
+Release:	5
 License:	GPL v2
 Group:		Networking/Daemons/HTTP
 Source0:	https://github.com/owasp-modsecurity/ModSecurity/releases/download/v%{version}/modsecurity-v%{version}.tar.gz
